@@ -24,7 +24,7 @@ router.post(
 
 router.get('/verify/:verificationToken', clientsCtrl.verify);
 
-// router.post('/login', validateBody(clientLoginSchema), clientsCtrl.login);
+router.post('/login', validateBody(clientLoginSchema), clientsCtrl.login);
 
 // router.get('/current', authentication, clientsCtrl.current);
 

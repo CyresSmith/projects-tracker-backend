@@ -87,7 +87,7 @@ const reVerify = async (req, res) => {
   const verificationEmail = {
     to: email,
     subject: 'Verification email',
-    html: `<a target="_blank" href="${BASE_URL}/api/users/verify/${client.verificationToken}">Click here to verify your email</a>`,
+    html: `<a target="_blank" href="${BASE_URL}/clients/verify/${client.verificationToken}">Click here to verify your email</a>`,
   };
 
   await sendEmail(verificationEmail);
@@ -97,42 +97,51 @@ const reVerify = async (req, res) => {
   });
 };
 
-// /**
-//  * ============================ Login client
-//  */
-// const loginClient = async (req, res) => {
-//   const { email, password } = req.body;
+/**
+ * ============================ Login client
+ */
+const loginClient = async (req, res) => {
+  const { email } = req.body;
 
-//   const client = await Client.findOne({ email }).populate(
-//     'favorite',
-//     '-createdAt -updatedAt'
-//   );
+  const client = await Client.findOne(
+    { email },
+    '-services -desc -mission -values -goals -files -links -budget -dateStart -deadline -avatarUrl -verificationToken -createdAt -updatedAt -token'
+  );
 
-//   if (!client) {
-//     throw httpError(401, `Email or password is wrong`);
-//   }
+  if (!client) {
+    throw httpError(401, `Email or password is wrong`);
+  }
 
-//   // if (!user.verify) {
-//   //   throw httpError(401, `Email not veryfi`);
-//   // }
+  if (!client.verify) {
+    throw httpError(401, `Email not verify`);
+  }
 
-//   const checkPassword = await bcrypt.compare(password, client.password);
+  const checkPassword = await bcrypt.compare(
+    req.body.password,
+    client.password
+  );
 
-//   if (!checkPassword) {
-//     throw httpError(401, `Email or password is wrong`);
-//   }
+  if (!checkPassword) {
+    throw httpError(401, `Email or password is wrong`);
+  }
 
-//   const { password, ...payload } = client;
+  const payload = {
+    _id: client._id,
+    fullName: client.fullName,
+    email: client.email,
+    phone: client.phone,
+    verify: client.verify,
+  };
 
-//   const token = jwt.sign(payload, SECRET, { expiresIn: '23h' });
+  const token = jwt.sign(payload, SECRET, { expiresIn: '23h' });
 
-//   await Client.findByIdAndUpdate(client._id, { token });
+  await Client.findByIdAndUpdate(client._id, { token });
 
-//   res.status(200).json({
-//     token,
-//     client: payload,
-//   });
-// };
+  res.status(200).json({
+    token,
+    client: payload,
+  });
+};
 
 // /**
 //  * ============================ Current client
@@ -210,7 +219,7 @@ module.exports = {
   register: ctrlWrapper(registerClient),
   verify: ctrlWrapper(verify),
   reVerify: ctrlWrapper(reVerify),
-  // login: ctrlWrapper(loginUser),
+  login: ctrlWrapper(loginClient),
   // current: ctrlWrapper(getCurrentUser),
   // update: ctrlWrapper(userUpdate),
   // logout: ctrlWrapper(logout),
