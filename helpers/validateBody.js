@@ -5,22 +5,28 @@ const HttpError = require('./httpError');
  */
 const validateBody = schema => {
   const func = async (req, res, next) => {
-    console.log('🚀 ~ file: validateBody.js:8 ~ func ~ req:', req.body);
+    const validatedObj = { ...req.body };
 
-    // let validatedObj = {};
+    const arrayFieldParse = field => {
+      const array = JSON.parse(field);
 
-    // if (req.file) {
-    //   const { fieldname, path } = req.file;
-    //   validatedObj = { ...req.body, [fieldname]: path };
-    // } else {
-    //   validatedObj = { ...req.body };
-    // }
+      if (Array.isArray(array)) {
+        return array;
+      }
 
-    // const { error } = schema.validate(validatedObj);
+      return field;
+    };
 
-    // if (error) {
-    //   next(HttpError(400, error.message));
-    // }
+    if (req.body.services)
+      validatedObj.services = arrayFieldParse(req.body.services);
+
+    if (req.body.links) validatedObj.links = arrayFieldParse(req.body.links);
+
+    const { error } = schema.validate(validatedObj);
+
+    if (error) {
+      next(HttpError(400, error.message));
+    }
     next();
   };
 

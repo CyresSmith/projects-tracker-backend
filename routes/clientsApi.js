@@ -6,7 +6,7 @@ const { clientsCtrl } = require('../controller');
 const { clientValidation } = require('../schemas');
 const { authentication, imageUpload } = require('../middlewares');
 const { validateBody } = require('../helpers');
-const filesUpload = require('../middlewares/filesUpload');
+const uploadToGoogleDrive = require('../middlewares/uploadToGoogleDrive');
 
 const {
   clientRegisterSchema,
@@ -17,10 +17,12 @@ const {
 
 router.post(
   '/register',
-  filesUpload.none(),
+  uploadToGoogleDrive(),
   validateBody(clientRegisterSchema),
   clientsCtrl.register
 );
+
+router.get('/verify/:verificationToken', clientsCtrl.verify);
 
 // router.post('/login', validateBody(clientLoginSchema), clientsCtrl.login);
 

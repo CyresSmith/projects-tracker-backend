@@ -180,32 +180,36 @@ const clientRegisterSchema = Joi.object({
     })
     .required(),
 
-  desc: Joi.string().min(30).max(300).messages({
+  desc: Joi.string().required().min(30).max(300).messages({
     'string.empty': `"Description" cannot be empty`,
     'string.base': `"Description" must be string`,
     'string.min': `"Description" should have a minimum length of {#limit}`,
     'string.max': `"Description" should have a maximum length of {#limit}`,
+    'any.required': '"Description" is required.',
   }),
 
-  mission: Joi.string().min(30).max(300).messages({
+  mission: Joi.string().required().min(30).max(300).messages({
     'string.empty': `"Mission" cannot be empty`,
     'string.base': `"Mission" must be string`,
     'string.min': `"Mission" should have a minimum length of {#limit}`,
     'string.max': `"Mission" should have a maximum length of {#limit}`,
+    'any.required': '"Mission" is required.',
   }),
 
-  values: Joi.string().min(30).max(300).messages({
+  values: Joi.string().required().min(30).max(300).messages({
     'string.empty': `"Values" cannot be empty`,
     'string.base': `"Values" must be string`,
     'string.min': `"Values" should have a minimum length of {#limit}`,
     'string.max': `"Values" should have a maximum length of {#limit}`,
+    'any.required': '"Values" is required.',
   }),
 
-  goals: Joi.string().min(30).max(300).messages({
+  goals: Joi.string().required().min(30).max(300).messages({
     'string.empty': `"Goals" cannot be empty`,
     'string.base': `"Goals" must be string`,
     'string.min': `"Goals" should have a minimum length of {#limit}`,
     'string.max': `"Goals" should have a maximum length of {#limit}`,
+    'any.required': '"Goals" is required.',
   }),
 
   files: Joi.array()
